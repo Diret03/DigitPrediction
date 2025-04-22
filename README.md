@@ -9,14 +9,14 @@ Flask Web App to predict the digit of a handwritten number.
 ## Authors
 
 - [@Diret03](https://github.com/Diret03/)
-- ...
+- [@Jordi021](https://github.com/Jordi021)
 
 ## Installation
 
 **Clone the repository**
 
 ```bash
-  git clone https://github.com/Diret03/BreastCancerDetection.git my-project
+  git clone https://github.com/Diret03/DigitPrediction.git my-project
   cd my-project
 ```
 
