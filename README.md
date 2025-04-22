@@ -1,7 +1,7 @@
 
-# Titanic Predicion
+# Digit Prediction
 
-Simple Flask Web App to predict if a Titanic passenger survived or not
+Flask Web App to predict the digit of a handwritten number.
 
 
 
