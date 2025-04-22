@@ -21,24 +21,67 @@
         .blob {
             border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
         }
+
+        /* Add these styles to your CSS file */
+        .active-tab {
+            color: #4F46E5;
+            border-bottom: 2px solid #4F46E5;
+        }
+
+        #drawing-canvas {
+            cursor: crosshair;
+            touch-action: none;
+        }
+
+        /* Tab button styles */
+        .tab-button {
+            position: relative;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            background-color: #f9fafb;
+            border-radius: 6px 6px 0 0;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        .tab-button:hover {
+            background-color: #f3f4f6;
+            border-bottom-color: #6366f1;
+        }
+
+        .tab-button.active {
+            color: #4f46e5;
+            border-bottom-color: #4f46e5;
+            background-color: #eef2ff;
+            font-weight: 600;
+        }
+
+        /* Add some shadow for depth */
+        .tab-button {
+            box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Make the active tab appear in front */
+        .tab-button.active {
+            z-index: 10;
+            box-shadow: 0 -2px 4px rgba(99, 102, 241, 0.1);
+        }
     </style>
 </head>
-<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
-<!-- Background Elements -->
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen font-poppins">
 <div class="fixed inset-0 -z-10 overflow-hidden">
-    <div class="absolute top-20 -left-10 w-72 h-72 bg-secondary-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
-    <div class="absolute top-40 right-20 w-80 h-80 bg-primary-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+    <div class="absolute top-20 -left-10 w-72 h-72 bg-indigo-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+    <div class="absolute top-40 right-20 w-80 h-80 bg-blue-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
     <div class="absolute -bottom-20 left-40 w-64 h-64 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
 </div>
 
 <div class="container mx-auto px-4 py-8 max-w-3xl relative z-10">
-    <!-- Header with Logo -->
     <header class="text-center mb-10 pt-6">
         <div class="flex justify-center items-center mb-4">
             <div class="relative">
-                <div class="absolute -inset-0.5 bg-gradient-to-r from-primary-600 to-secondary-600 rounded-full blur opacity-75"></div>
-                <div class="relative bg-white rounded-full p-3">
-                    <svg class="w-10 h-10 text-primary-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                <div class="absolute -inset-0.5 bg-gradient-to-r from-indigo-600 to-blue-500 rounded-full blur opacity-75"></div>
+                <div class="relative bg-white rounded-full p-3 shadow-md">
+                    <svg class="w-10 h-10 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none"
                          viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
@@ -46,126 +89,236 @@
                 </div>
             </div>
         </div>
-        <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-secondary-600 mb-2">
+        <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-blue-500 mb-2">
             DigitAI</h1>
-        <p class="text-gray-600 font-light max-w-lg mx-auto">Reconocimiento inteligente de dígitos impulsado por IA.
-            Sube una imagen y descubre qué número contiene.</p>
+        <p class="text-gray-600 font-light max-w-lg mx-auto">Reconocimiento inteligente de dígitos. Elige cómo quieres
+            ingresar tu dígito.</p>
     </header>
 
-    <!-- Main Content -->
     <main>
-        <!-- Upload Card with Glass Effect -->
-        <section
-                class="mb-8 backdrop-blur-md bg-white/60 rounded-2xl shadow-xl border border-white/50 p-8 transition-all duration-300 hover:shadow-2xl group">
-            <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
-                <svg class="w-6 h-6 mr-2 text-primary-600" xmlns="http://www.w3.org/2000/svg" fill="none"
-                     viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
-                </svg>
-                Sube tu imagen
-            </h2>
+        <div class="mb-6 border-b border-gray-300">
+            <nav class="flex -mb-px space-x-4" aria-label="Tabs">
+                <button id="tab-upload-button"
+                        class="tab-button active whitespace-nowrap py-3 px-4 text-base font-medium text-gray-600 hover:text-indigo-600"
+                        data-tab-target="#tab-upload-content">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1.5 inline-block" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                    </svg>
+                    Subir Imagen
+                </button>
+                <button id="tab-draw-button"
+                        class="tab-button whitespace-nowrap py-3 px-4 text-base font-medium text-gray-600 hover:text-indigo-600"
+                        data-tab-target="#tab-draw-content">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1.5 inline-block" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                    </svg>
+                    Dibujar Dígito
+                </button>
+            </nav>
+        </div>
 
-            <form action="{{ url_for('predict') }}" method="post" enctype="multipart/form-data" class="space-y-6">
-                <div class="flex flex-col items-center justify-center border-2 border-dashed border-primary-300 rounded-xl p-8 transition-all duration-300 hover:border-primary-500 group-hover:shadow-md bg-white/40">
-                    <div class="text-center" id="upload-container">
-                        <div class="mb-4 relative mx-auto w-12 h-12 flex items-center justify-center">
-                            <div class="absolute inset-0 bg-primary-100 rounded-full animate-pulse-slow"></div>
-                            <svg xmlns="http://www.w3.org/2000/svg"
-                                 class="relative z-10 h-6 w-6 text-primary-600 transition-transform group-hover:scale-110 duration-300"
-                                 fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-                            </svg>
+        <div>
+            <div id="tab-upload-content" class="tab-panel">
+                <section
+                        class="mb-8 backdrop-blur-md bg-white/60 rounded-2xl shadow-xl border border-white/50 p-8 transition-all duration-300 hover:shadow-2xl group">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                        <svg class="w-6 h-6 mr-2 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                             viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                        </svg>
+                        Sube tu imagen
+                    </h2>
+
+                    <form action="{{ url_for('predict') }}" method="post" enctype="multipart/form-data"
+                          class="space-y-6">
+                        <div class="flex flex-col items-center justify-center border-2 border-dashed border-indigo-300 rounded-xl p-8 transition-all duration-300 hover:border-indigo-500 group-hover:shadow-inner bg-white/40 cursor-pointer"
+                             id="drop-zone">
+                            <div class="text-center" id="upload-container">
+                                <div class="mb-4 relative mx-auto w-12 h-12 flex items-center justify-center">
+                                    <div class="absolute inset-0 bg-indigo-100 rounded-full animate-pulse-slow"></div>
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         class="relative z-10 h-6 w-6 text-indigo-600 transition-transform group-hover:scale-110 duration-300"
+                                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                                <p class="font-medium text-gray-700">Arrastra y suelta tu imagen aquí</p>
+                                <p class="text-sm text-gray-500 mt-2">- o -</p>
+                                <button type="button" id="browse-button"
+                                        class="mt-2 text-sm font-medium text-indigo-600 hover:text-indigo-800 transition-colors focus:outline-none">
+                                    Buscar en tu dispositivo
+                                </button>
+                                <p class="text-xs text-gray-500 mt-4">Formatos: PNG, JPG, GIF (máx. 2MB)</p>
+                            </div>
+
+                            <div class="hidden mt-4 w-full" id="image-preview-container">
+                                <div class="relative mx-auto max-w-xs">
+                                    <img id="image-preview"
+                                         class="max-h-40 rounded-lg mx-auto border border-gray-200 shadow-md"
+                                         alt="Vista previa de la imagen">
+                                    <button type="button" id="remove-image" title="Eliminar imagen"
+                                            class="absolute -top-2 -right-2 bg-white rounded-full p-1 shadow-md text-gray-500 hover:text-red-500 transition-colors focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-1">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                             viewBox="0 0 24 24"
+                                             stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M6 18L18 6M6 6l12 12"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <p id="filename-display"
+                                   class="text-xs text-gray-600 mt-2 text-center truncate w-full px-2"></p>
+                            </div>
+
+                            <input type="file" name="image" id="image-upload" accept="image/png, image/jpeg, image/gif"
+                                   class="hidden" required>
                         </div>
-                        <p class="font-medium text-gray-700">Arrastra y suelta tu imagen aquí</p>
-                        <p class="text-sm text-gray-500 mt-2">- o -</p>
-                        <button type="button" id="browse-button"
-                                class="mt-2 text-sm font-medium text-primary-600 hover:text-primary-800 transition-colors">
-                            Buscar en tu dispositivo
-                        </button>
-                        <p class="text-xs text-gray-500 mt-4">Formatos aceptados: PNG, JPG, GIF (máx. 2MB)</p>
-                    </div>
 
-                    <div class="hidden mt-4 w-full" id="image-preview-container">
-                        <div class="relative mx-auto max-w-xs">
-                            <img id="image-preview" class="max-h-40 rounded-lg mx-auto border border-gray-200 shadow-md"
-                                 alt="Vista previa de la imagen">
-                            <button type="button" id="remove-image"
-                                    class="absolute -top-2 -right-2 bg-white rounded-full p-1 shadow-md text-gray-500 hover:text-red-500 transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                     stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M6 18L18 6M6 6l12 12"/>
-                                </svg>
+                        <div class="flex justify-center">
+                            <button type="submit" id="predict-button"
+                                    class="relative inline-flex items-center px-8 py-3 overflow-hidden text-lg font-medium text-white rounded-xl group focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl disabled:transform-none disabled:hover:shadow-none"
+                                    style="background-color: #4F46E5;">
+                                <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 opacity-10 rotate-12 group-hover:-translate-x-40 ease group-disabled:hidden"></span>
+                                <span class="relative z-10 flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
+                                         viewBox="0 0 24 24"
+                                         stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                                    </svg>
+                                    Predecir Dígito
+                                </span>
                             </button>
                         </div>
-                        <p class="text-xs text-gray-500 mt-2 text-center">Imagen seleccionada</p>
-                    </div>
+                    </form>
+                </section>
+            </div>
 
-                    <input type="file" name="image" id="image-upload" accept="image/*" class="hidden" required>
-                </div>
+            <!-- Replace the existing tab-draw-content div with this updated version -->
+            <div id="tab-draw-content" class="tab-panel hidden">
+                <section
+                        class="mb-8 backdrop-blur-md bg-white/60 rounded-2xl shadow-xl border border-white/50 p-8 transition-all duration-300 hover:shadow-2xl">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-indigo-600" fill="none"
+                             viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                        </svg>
+                        Dibuja tu dígito aquí
+                    </h2>
 
-                <div class="flex justify-center">
-                    <button type="submit" id="predict-button"
-                            class="bg-blue-700 relative inline-flex items-center px-8 py-3 overflow-hidden text-lg font-medium text-white bg-gradient-to-r from-primary-500 to-secondary-500 rounded-xl group focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl">
-                        <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 bg-white opacity-10 rotate-12 group-hover:-translate-x-40 ease"></span>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                    <form action="{{ url_for('predict_drawing') }}" method="post" enctype="multipart/form-data"
+                          class="space-y-6">
+                        <div class="flex flex-col items-center">
+                            <div class="border-2 border-indigo-300 rounded-xl bg-white/40 p-2">
+                                <canvas id="drawing-canvas" class="border border-gray-300"></canvas>
+                            </div>
+
+                            <div class="mt-4 flex space-x-4">
+                                <button type="button" id="clear-canvas"
+                                        class="px-4 py-2 text-sm font-medium text-indigo-700 bg-indigo-100 rounded-lg hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200 shadow-sm hover:shadow-md">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1"
+                                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                    Borrar
+                                </button>
+                            </div>
+
+                            <p class="text-sm text-gray-600 mt-4">Dibuja un número del 0 al 9 en el recuadro
+                                anterior</p>
+                        </div>
+
+                        <!-- Hidden input to store canvas data -->
+                        <input type="hidden" name="canvas_data" id="canvas-data">
+
+                        <div class="flex justify-center mt-6">
+                            <button type="submit" id="predict-draw-button" disabled
+                                    class="relative inline-flex items-center px-8 py-3 overflow-hidden text-lg font-medium text-white rounded-xl group focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl disabled:transform-none disabled:hover:shadow-none"
+                                    style="background-color: #4F46E5;">
+                                <span class="absolute right-0 w-8 h-32 -mt-12 transition-all duration-1000 transform translate-x-12 opacity-10 rotate-12 group-hover:-translate-x-40 ease group-disabled:hidden"></span>
+                                <span class="relative z-10 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
+                             viewBox="0 0 24 24"
                              stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
                         </svg>
-                        Predecir Dígito
-                    </button>
-                </div>
-            </form>
-        </section>
+                        Predecir Dibujo
+                    </span>
+                            </button>
+                        </div>
+                    </form>
+                </section>
+            </div>
+        </div>
 
-        <!-- Results Section with Glass Effect -->
+
         {% if prediction is defined %}
             <section
                     class="backdrop-blur-md bg-white/60 rounded-2xl shadow-xl border border-white/50 p-8 transition-all duration-300 hover:shadow-2xl">
                 <h2 class="text-xl font-semibold text-gray-800 mb-6 flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600" fill="none"
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-indigo-600" fill="none"
                          viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                     Resultado del Análisis
                 </h2>
 
-                <!-- Result Content -->
-                <div class="flex flex-col lg:flex-row items-center justify-between space-y-8 lg:space-y-0">
-                    <!-- Image Section -->
+                <div class="flex flex-col lg:flex-row items-center justify-between space-y-8 lg:space-y-0 lg:space-x-8">
                     <div class="lg:w-1/3 text-center">
+                        <p class="text-sm font-medium text-gray-600 mb-2">Tu Imagen:</p>
                         <div class="relative mx-auto w-40 h-40">
-                            <div class="absolute inset-0 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-2xl blur opacity-30"></div>
-                            <div class="relative bg-white/90 rounded-2xl shadow-md p-4 flex items-center justify-center h-full">
+                            <div class="absolute inset-0 bg-gradient-to-br from-indigo-500 to-blue-400 rounded-2xl blur opacity-30"></div>
+                            <div class="relative bg-white/90 rounded-2xl shadow-md p-3 flex items-center justify-center h-full border border-gray-200">
                                 <img src="{{ url_for('static', filename='uploads/' + filename) }}" alt="Imagen subida"
                                      class="max-h-32 max-w-full object-contain">
                             </div>
                         </div>
                     </div>
 
-                    <!-- Result Info -->
-                    <div class="lg:w-2/3">
-                        <div class="bg-gradient-to-br from-white/80 to-white/50 rounded-xl shadow-md p-6">
-                            <!-- Prediction -->
+                    <div class="lg:w-2/3 w-full">
+                        <div class="bg-gradient-to-br from-white/80 to-white/50 rounded-xl shadow-inner border border-white/70 p-6">
                             <div class="mb-6">
                                 <span class="block text-sm font-medium text-gray-600 mb-1">Dígito Reconocido</span>
-                                <div class="flex items-end">
+                                <div class="flex items-baseline space-x-3">
                                     <span class="text-7xl text-black font-bold bg-clip-text bg-gradient-to-r from-primary-600 to-secondary-600">{{ prediction }}</span>
                                     {% if confidence >= 90 %}
-                                        <span class="ml-4 mb-2 bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Alta confianza</span>
+                                        <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-1 rounded-full flex items-center">
+                                             <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path
+                                                     fill-rule="evenodd"
+                                                     d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                                     clip-rule="evenodd"></path></svg>
+                                            Alta Confianza
+                                        </span>
                                     {% elif confidence >= 70 %}
-                                        <span class="ml-4 mb-2 bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Confianza media</span>
+                                        <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-1 rounded-full flex items-center">
+                                             <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path
+                                                     fill-rule="evenodd"
+                                                     d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.21 3.03-1.742 3.03H4.42c-1.532 0-2.493-1.696-1.742-3.03l5.58-9.92zM10 13a1 1 0 110-2 1 1 0 010 2zm-1-4a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z"
+                                                     clip-rule="evenodd"></path></svg>
+                                            Confianza Media
+                                        </span>
                                     {% else %}
-                                        <span class="ml-4 mb-2 bg-red-100 text-red-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Baja confianza</span>
+                                        <span class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-1 rounded-full flex items-center">
+                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20"><path
+                                                    fill-rule="evenodd"
+                                                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                                                    clip-rule="evenodd"></path></svg>
+                                            Baja Confianza
+                                        </span>
                                     {% endif %}
                                 </div>
                             </div>
 
-                            <!-- Confidence -->
                             <div>
                                 <div class="flex justify-between items-center mb-1">
                                     <span class="text-sm font-medium text-gray-600">Nivel de Confianza:</span>
@@ -176,38 +329,37 @@
                                          style="width: {{ confidence }}%; transition-property: width;">
                                     </div>
                                 </div>
-                                <p class="text-xs text-gray-500 mt-2">
+                                <p class="text-xs text-gray-500 mt-2 italic">
                                     {% if confidence >= 90 %}
-                                        Predicción muy segura
+                                        El modelo está muy seguro de esta predicción.
                                     {% elif confidence >= 70 %}
-                                        Predicción bastante confiable
+                                        El modelo tiene una confianza razonable.
                                     {% else %}
-                                        La predicción podría no ser exacta
+                                        La predicción podría no ser precisa. Considera usar una imagen más clara.
                                     {% endif %}
                                 </p>
                             </div>
                         </div>
 
-                        <!-- Action Buttons -->
                         <div class="flex justify-center mt-6 space-x-4">
                             <a href="{{ url_for('index') }}"
-                               class="flex items-center px-4 py-2 text-sm font-medium text-primary-700 bg-primary-100 rounded-lg hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none"
+                               class="flex items-center px-4 py-2 text-sm font-medium text-indigo-700 bg-indigo-100 rounded-lg hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors duration-200 shadow-sm hover:shadow-md">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1 -ml-1" fill="none"
                                      viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                                 </svg>
-                                Intentar con otra imagen
+                                Probar de Nuevo
                             </a>
                         </div>
                     </div>
                 </div>
             </section>
         {% endif %}
-        <!-- Information Card -->
-        <section class="mt-8 backdrop-blur-md bg-white/60 rounded-2xl shadow-lg border border-white/50 p-6">
-            <h2 class="text-lg font-semibold text-gray-800 mb-2 flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-primary-600" fill="none"
+
+        <section class="mt-10 backdrop-blur-md bg-white/60 rounded-2xl shadow-lg border border-white/50 p-6">
+            <h2 class="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-600" fill="none"
                      viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -215,7 +367,8 @@
                 ¿Cómo funciona?
             </h2>
             <div class="text-sm text-gray-600 space-y-2">
-                <p>Esta aplicación utiliza un modelo de red neuronal convolucional (CNN) entrenado con el dataset <span class="font-bold">MNIST</span> para reconocer dígitos escritos a
+                <p>Esta aplicación utiliza un modelo de red neuronal convolucional (CNN) entrenado con el dataset <span
+                        class="font-bold">MNIST</span> para reconocer dígitos escritos a
                     mano. Sube una imagen clara de un solo dígito (0-9) para obtener los mejores resultados.</p>
                 <p>El porcentaje de confianza indica qué tan seguro está el modelo de su predicción. Una mayor confianza
                     generalmente significa una predicción más precisa.</p>
@@ -225,11 +378,12 @@
 
     <footer class="mt-12 text-center text-gray-500 text-xs">
         <p class="mb-2">&copy; {{ current_year }} DigitAI - Tecnología de reconocimiento de dígitos</p>
-{#        <div class="flex justify-center space-x-4">#}
-{#            <a href="#" class="text-gray-400 hover:text-primary-600 transition-colors">Términos</a>#}
-{#            <a href="#" class="text-gray-400 hover:text-primary-600 transition-colors">Privacidad</a>#}
-{#            <a href="#" class="text-gray-400 hover:text-primary-600 transition-colors">Contacto</a>#}
-{#        </div>#}
+        {# Footer links comentados como en el original
+        <div class="flex justify-center space-x-4">
+            <a href="#" class="text-gray-400 hover:text-indigo-600 transition-colors">Términos</a>
+            <a href="#" class="text-gray-400 hover:text-indigo-600 transition-colors">Privacidad</a>
+            <a href="#" class="text-gray-400 hover:text-indigo-600 transition-colors">Contacto</a>
+        </div> #}
     </footer>
 </div>
 
@@ -253,7 +407,7 @@
         });
     }
 
-     // Activar input de archivo cuando se hace clic en el contenedor de subir imagen
+    // Activar input de archivo cuando se hace clic en el contenedor de subir imagen
     if (uploadContainer) {
         uploadContainer.addEventListener('click', () => {
             fileInput.click();
@@ -337,6 +491,141 @@
                     confidenceBar.style.width = '{{ confidence }}%';
                 }, 300);
             }, 200);
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabPanels = document.querySelectorAll('.tab-panel');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Deactivate all tabs
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                tabPanels.forEach(panel => panel.classList.add('hidden'));
+
+                // Activate the clicked tab
+                button.classList.add('active');
+                const targetPanel = document.querySelector(button.dataset.tabTarget);
+                if (targetPanel) {
+                    targetPanel.classList.remove('hidden');
+                }
+            });
+        });
+    });
+
+
+    // Canvas drawing functionality for digit prediction
+    document.addEventListener('DOMContentLoaded', function () {
+        // Canvas setup
+        const canvas = document.getElementById('drawing-canvas');
+        const ctx = canvas.getContext('2d');
+        const clearButton = document.getElementById('clear-canvas');
+        const predictDrawButton = document.getElementById('predict-draw-button');
+        const canvasDataInput = document.getElementById('canvas-data');
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+
+        // Set canvas size
+        canvas.width = 280;
+        canvas.height = 280;
+
+        // Canvas styling
+        ctx.lineWidth = 15;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.strokeStyle = 'black';
+
+        // Initialize with white background (important for ML model)
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Drawing event listeners
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+
+        // Touch support
+        canvas.addEventListener('touchstart', function (e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousedown', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        });
+
+        canvas.addEventListener('touchmove', function (e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousemove', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+        });
+
+        canvas.addEventListener('touchend', function (e) {
+            e.preventDefault();
+            const mouseEvent = new MouseEvent('mouseup');
+            canvas.dispatchEvent(mouseEvent);
+        });
+
+        // Clear canvas button
+        clearButton.addEventListener('click', function () {
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            updateCanvasData();
+            predictDrawButton.disabled = true;
+        });
+
+        function startDrawing(e) {
+            isDrawing = true;
+
+            const rect = canvas.getBoundingClientRect();
+            lastX = e.clientX - rect.left;
+            lastY = e.clientY - rect.top;
+
+            // Draw a dot at the starting point
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(lastX, lastY);
+            ctx.stroke();
+
+            predictDrawButton.disabled = false;
+        }
+
+        function draw(e) {
+            if (!isDrawing) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const currentX = e.clientX - rect.left;
+            const currentY = e.clientY - rect.top;
+
+            ctx.beginPath();
+            ctx.moveTo(lastX, lastY);
+            ctx.lineTo(currentX, currentY);
+            ctx.stroke();
+
+            // Update last position for next move
+            lastX = currentX;
+            lastY = currentY;
+
+            updateCanvasData();
+        }
+
+        function stopDrawing() {
+            isDrawing = false;
+            updateCanvasData();
+        }
+
+        function updateCanvasData() {
+            // Convert canvas to base64 image data URL
+            const imageData = canvas.toDataURL('image/png');
+            canvasDataInput.value = imageData;
         }
     });
 </script>
